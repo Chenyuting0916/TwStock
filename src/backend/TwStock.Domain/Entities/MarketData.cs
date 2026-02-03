@@ -6,7 +6,7 @@ public class MarketData : BaseEntity
     public int StockId { get; set; }
     public Stock? Stock { get; set; }
 
-    public DateOnly Date { get; set; }
+    public DateTime Date { get; set; }
 
     // OHLCV
     public decimal Open { get; set; }
