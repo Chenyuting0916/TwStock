@@ -6,6 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 using TwStock.Domain.Interfaces;
 using TwStock.Infrastructure.Persistence;
 using TwStock.Infrastructure.Persistence.Repositories;
+using TwStock.Infrastructure.Crawlers;
+using TwStock.Application.Interfaces;
+using TwStock.Application.Services;
 
 public static class DependencyInjection
 {
@@ -18,6 +21,18 @@ public static class DependencyInjection
 
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         services.AddScoped<IStockRepository, StockRepository>();
+
+        // Crawlers - Use FinMind API for accurate Taiwan stock financial data
+        services.AddHttpClient<FinMindCrawler>();
+        services.AddScoped<IFinancialCrawler, FinMindCrawler>();
+        services.AddHttpClient<TwseStockCrawler>();
+        services.AddScoped<IStockCrawler, TwseStockCrawler>();
+
+        // Services
+        services.AddScoped<DataUpdateService>();
+        services.AddHttpClient<TwStock.Infrastructure.Services.FinMindRawDataService>();
+        services.AddScoped<TwStock.Infrastructure.Services.FinMindRawDataService>();
+        services.AddScoped<TwStock.Infrastructure.Services.RawDataFinancialService>();
 
         return services;
     }

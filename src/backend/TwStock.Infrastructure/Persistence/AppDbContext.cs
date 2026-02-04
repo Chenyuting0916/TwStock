@@ -9,9 +9,10 @@ public class AppDbContext : DbContext
     {
     }
 
-    public DbSet<Stock> Stocks { get; set; }
-    public DbSet<FinancialStatement> FinancialStatements { get; set; }
-    public DbSet<MarketData> MarketData { get; set; }
+    public DbSet<Stock> Stocks { get; set; } = null!;
+    public DbSet<FinancialStatement> FinancialStatements { get; set; } = null!;
+    public DbSet<MarketData> MarketData { get; set; } = null!;
+    public DbSet<FinMindRawData> FinMindRawData { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

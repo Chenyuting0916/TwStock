@@ -45,8 +45,8 @@ public class StockService : IStockService
         if (stock == null) return new List<FinancialStatementDto>();
 
         return stock.FinancialStatements
-            .OrderByDescending(f => f.Year)
-            .ThenByDescending(f => f.Quarter)
+            .OrderBy(f => f.Year)
+            .ThenBy(f => f.Quarter)
             .Select(f => new FinancialStatementDto(
                 f.Year,
                 f.Quarter,
@@ -64,19 +64,19 @@ public class StockService : IStockService
     {
         // Simple client-side filtering (Not efficient for production but okay for prototype)
         // Ideally should be in Repository IQueryable
-        var stocks = await _repository.ListAllAsync(); 
-        
+        var stocks = await _repository.ListAllAsync();
+
         // This requires loading ALL stocks. With details?
         // Generic Repository ListAllAsync doesn't include Details by default unless overridden.
         // I need to use a specific query in Repository for Screening.
-        
+
         // For now, I'll return empty List to avoid performance bomb, or implement rudimentary fetch.
         // Using "GetDetailsBySymbolAsync" is 1 by 1.
-        
+
         // Better: Add `FindWithDetailsAsync` to Repo or specific logic.
         // I will return empty list for now inside the stub and add TODO.
         // User requested "Screener". I should implement it properly later via Repository.
-        
+
         return new List<StockDto>();
     }
 }

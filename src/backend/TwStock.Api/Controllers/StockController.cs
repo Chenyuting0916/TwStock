@@ -1,31 +1,35 @@
+using Microsoft.AspNetCore.Mvc;
+using TwStock.Infrastructure.Services;
+
 namespace TwStock.Api.Controllers;
 
-using Microsoft.AspNetCore.Mvc;
-using TwStock.Application.Services;
-
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/stock")]
 public class StockController : ControllerBase
 {
-    private readonly IStockService _stockService;
+    private readonly RawDataFinancialService _rawDataService;
+    private readonly ILogger<StockController> _logger;
 
-    public StockController(IStockService stockService)
+    public StockController(
+        RawDataFinancialService rawDataService,
+        ILogger<StockController> logger)
     {
-        _stockService = stockService;
+        _rawDataService = rawDataService;
+        _logger = logger;
     }
 
-    [HttpGet("{symbol}")]
-    public async Task<IActionResult> GetSummary(string symbol)
-    {
-        var stock = await _stockService.GetStockSummaryAsync(symbol);
-        if (stock == null) return NotFound();
-        return Ok(stock);
-    }
-    
     [HttpGet("{symbol}/financials")]
     public async Task<IActionResult> GetFinancials(string symbol)
     {
-        var financials = await _stockService.GetFinancialsAsync(symbol);
-        return Ok(financials);
+        try
+        {
+            var financials = await _rawDataService.GetFinancialsAsync(symbol);
+            return Ok(financials);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error fetching financials for {symbol}");
+            return StatusCode(500, "Internal server error");
+        }
     }
 }
